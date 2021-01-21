@@ -1,1 +1,1 @@
-https://shopify.dev/tutorials/build-a-shopify-app-with-node-and-react/set-up-your-app
+https://shopify.dev/tutorials/build-a-shopify-app-with-node-and-react
