@@ -1,30 +1,27 @@
 {
-  "name": "sample-embedded-app",
+  "name": "shopify-react-app",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node server.js",
-    "build": "next build",
-    "start": "NODE_ENV=production node server.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": "codehub623:codehub623/shopify-react-app.git",
+  "author": "codehub623 <codehub2010@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "@shopify/koa-shopify-auth": "^3.2.0",
-    "@shopify/polaris": "^6.0.1",
-    "@zeit/next-css": "^1.0.1",
     "dotenv": "^8.2.0",
     "isomorphic-fetch": "^3.0.0",
     "koa": "^2.13.1",
     "koa-session": "^6.1.0",
-    "next": "^10.0.5",
+    "next": "^10.0.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
-  "engines": {
-    "node": "14.11.0"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
