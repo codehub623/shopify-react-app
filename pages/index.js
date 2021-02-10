@@ -96,11 +96,11 @@ const Home = ({ props }) => {
             </Form.Group>
             <Form.Group controlId="system" onChange={(e)=>system(e)}>
               <Form.Label>Operating System</Form.Label>
-              <Form.Check type="checkbox" label="Windows" />
-              <Form.Check type="checkbox" label="Mac" />
-              <Form.Check type="checkbox" label="Linux" />
-              <Form.Check type="checkbox" label="Android" />
-              <Form.Check type="checkbox" label="iOS" />
+              <Form.Check type="checkbox" label="Windows" name="window"/>
+              <Form.Check type="checkbox" label="Mac" name="window"/>
+              <Form.Check type="checkbox" label="Linux" name="window"/>
+              <Form.Check type="checkbox" label="Android" name="window"/>
+              <Form.Check type="checkbox" label="iOS" name="window"/>
             </Form.Group>
           </Form>
         </div>
