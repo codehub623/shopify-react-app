@@ -6,14 +6,26 @@
   "author": "codehub623 <codehub2010@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@apollo/react-hooks": "^4.0.0",
     "@shopify/koa-shopify-auth": "^3.2.0",
+    "@shopify/polaris": "^6.0.1",
+    "@zeit/next-css": "^1.0.1",
+    "@zeit/next-less": "^1.0.1",
+    "@zeit/next-sass": "^1.0.1",
+    "apollo-boost": "^0.4.9",
+    "bootstrap": "^4.6.0",
     "dotenv": "^8.2.0",
+    "graphql": "^15.5.0",
     "isomorphic-fetch": "^3.0.0",
     "koa": "^2.13.1",
     "koa-session": "^6.1.0",
     "next": "^10.0.6",
+    "next-images": "^1.7.0",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-apollo": "^3.1.5",
+    "react-bootstrap": "^1.4.3",
+    "react-dom": "^17.0.1",
+    "store-js": "^2.0.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,6 +34,7 @@
     "start": "NODE_ENV=production node server.js"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "webpack": "^4.46.0"
   }
 }
