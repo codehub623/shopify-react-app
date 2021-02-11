@@ -3,38 +3,47 @@ import gql from "graphql-tag"
 import { Nav, Navbar, NavDropdown, Form, FormControl, Button, Container, Table, Image } from 'react-bootstrap'
 import { client } from './_app'
 
-const defaultQuery = `
-  {
-    search_products(str:"sortBy=updatedAt&sortType=desc"){
-      results{
-        kinguinId
-        productId
-        name
-        screenshots{
-          url
-          url_original
-        }
-        updatedAt
-        platform
-        genres
-        price
-      }
-    item_count
-    }
-  }
-`
-const Home = ({ props }) => {
-  const [query, SetQuery] = useState('sortBy=updatedAt&sortType=desc');
+const defaultQuery = "sortBy=updatedAt&sortType=desc";
+
+const Home = () => {
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [rate, setRate] = useState(0.1);
   const [search_name, setSearchName] = useState("");
   const [platform, setPlatform] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [priceFrom, setPriceFrom] = useState(0);
+  const [priceTo, setPriceTo] = useState(0);
   useEffect(() => {
-    search_products(makeQuery());
+    search_products();
   }, []);
-  function search_products(query) {
-    console.log(query);
+  function search_products() {
+    let temp = defaultQuery;
+    if (search_name) temp += `&name=${search_name}`;
+    if (platform.length) temp += `&platform=${platform.join(',')}`;
+    if (genres.length) temp += `&genres=${genres.join(',')}`;
+    if (priceFrom > 0) temp += `&priceFrom=${priceFrom}`;
+    if (priceTo > priceFrom && priceTo > 0) temp += `&priceTo=${priceTo}`;
+    let query = `
+                {
+                  search_products(str:"${temp}"){
+                    results{
+                      kinguinId
+                      productId
+                      name
+                      screenshots{
+                        url
+                        url_original
+                      }
+                      updatedAt
+                      platform
+                      genres
+                      price
+                    }
+                  item_count
+                  }
+                }
+              `
     client.query({
       query: gql`
         ${query}
@@ -49,32 +58,6 @@ const Home = ({ props }) => {
       })
       .catch(error => console.error(error));
   }
-  function makeQuery() {
-    let temp = query
-    if (search_name) temp += `&name=${search_name}`;
-    if (platform.length) temp += `&platform=${platform.join(',')}`;
-    console.log(temp);
-    return `
-  {
-    search_products(str:"${temp}"){
-      results{
-        kinguinId
-        productId
-        name
-        screenshots{
-          url
-          url_original
-        }
-        updatedAt
-        platform
-        genres
-        price
-      }
-    item_count
-    }
-  }
-  `
-  }
   function click(id) {
     console.log(id)
   }
@@ -84,12 +67,12 @@ const Home = ({ props }) => {
       alert("Search value must be at lest 3 letters");
       return;
     }
-    search_products(makeQuery());
+    search_products();
   }
   function changePlatform(name, value) {
     console.log(name, value);
     let temp = [...platform];
-    console.log('first',temp);
+    console.log('first', temp);
     if (value) {
       temp.push(name);
       setPlatform(temp);
@@ -101,13 +84,28 @@ const Home = ({ props }) => {
       }
     }
   }
+  function changeGenres(name, value) {
+    console.log(name, value);
+    let temp = [...genres];
+    console.log('first', temp);
+    if (value) {
+      temp.push(name);
+      setGenres(temp);
+    } else {
+      const index = temp.indexOf(name);
+      if (index > -1) {
+        temp.splice(index, 1);
+        setGenres(temp);
+      }
+    }
+  }
   return (
     <div>
       <Navbar bg="light" expand="lg">
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
           </Nav>
-          <Form inline onSubmit={(e)=>e.preventDefault()}>
+          <Form inline onSubmit={(e) => e.preventDefault()}>
             <FormControl type="text" placeholder="Search" className="mr-sm-2" value={search_name} onChange={(e) => { setSearchName(e.target.value); e.preventDefault() }} />
             <Button variant="outline-success" onClick={e => searchName()}>Search</Button>
           </Form>
@@ -115,34 +113,32 @@ const Home = ({ props }) => {
       </Navbar>
       <div className="row">
         <div className="col-2 sidebar-padding-left">
+          <div style={{ padding: "10px" }}>
+            <button type="button" className="btn btn-success btn-sm btn-block" onClick={()=>search_products()}>Filter</button>
+          </div>
           <Form>
             <Form.Group controlId="platform">
               <Form.Label>Platform</Form.Label>
-              <Form.Check type="checkbox" label="Steam"  checked={platform.includes("Steam")} onChange={(e) => { changePlatform('Steam', e.target.checked); }} />
-              <Form.Check type="checkbox" label="Battle.net" checked={platform.includes("Battle.net")}  onChange={(e) => { changePlatform('Battle.net', e.target.checked);}} />
+              <Form.Check type="checkbox" label="Steam" checked={platform.includes("Steam")} onChange={(e) => { changePlatform('Steam', e.target.checked); }} />
+              <Form.Check type="checkbox" label="Battle.net" checked={platform.includes("Battle.net")} onChange={(e) => { changePlatform('Battle.net', e.target.checked); }} />
               <Form.Check type="checkbox" label="NCSoft" checked={platform.includes("NCSoft")} onChange={(e) => { changePlatform('NCSoft', e.target.checked); }} />
-              <Form.Check type="checkbox" label="Uplay" checked={platform.includes("Uplay")} onChange={(e) => { changePlatform('Uplay', e.target.checked);}} />
+              <Form.Check type="checkbox" label="Uplay" checked={platform.includes("Uplay")} onChange={(e) => { changePlatform('Uplay', e.target.checked); }} />
               <Form.Check type="checkbox" label="Kinguin" checked={platform.includes("Kinguin")} onChange={(e) => { changePlatform('Kinguin', e.target.checked); }} />
-              <Form.Check type="checkbox" label="Other" checked={platform.includes("Other")} onChange={(e) => { changePlatform('Other', e.target.checked);}} />
-            </Form.Group>
-            <Form.Group controlId="region">
-              <Form.Label>Region</Form.Label>
-              <Form.Check type="checkbox" label="Region free" />
-              <Form.Check type="checkbox" label="Europe" />
-              <Form.Check type="checkbox" label="North America" />
-              <Form.Check type="checkbox" label="Other" />
+              <Form.Check type="checkbox" label="Other" checked={platform.includes("Other")} onChange={(e) => { changePlatform('Other', e.target.checked); }} />
             </Form.Group>
             <Form.Group controlId="price">
               <Form.Label>Price Range</Form.Label>
+              <p>From <input type='number' min={0} value={priceFrom} onChange={(e) => setPriceFrom(e.target.value)} /></p>
+              <p>To <input type='number' min={0} value={priceTo} onChange={(e) => setPriceTo(e.target.value)} /></p>
             </Form.Group>
             <Form.Group controlId="genres">
               <Form.Label>Genres</Form.Label>
-              <Form.Check type="checkbox" label="Action" />
-              <Form.Check type="checkbox" label="Adventure" />
-              <Form.Check type="checkbox" label="Anime" />
-              <Form.Check type="checkbox" label="Casual" />
-              <Form.Check type="checkbox" label="Dating" />
-              <Form.Check type="checkbox" label="Fighting" />
+              <Form.Check type="checkbox" label="Action" checked={genres.includes("Action")} onChange={(e) => { changeGenres('Action', e.target.checked); }} />
+              <Form.Check type="checkbox" label="Adventure" checked={genres.includes("Adventure")} onChange={(e) => { changeGenres('Adventure', e.target.checked); }} />
+              <Form.Check type="checkbox" label="Anime" checked={genres.includes("Anime")} onChange={(e) => { changeGenres('Anime', e.target.checked); }} />
+              <Form.Check type="checkbox" label="Casual" checked={genres.includes("Casual")} onChange={(e) => { changeGenres('Casual', e.target.checked); }} />
+              <Form.Check type="checkbox" label="Dating" checked={genres.includes("Dating")} onChange={(e) => { changeGenres('Dating', e.target.checked); }} />
+              <Form.Check type="checkbox" label="Fighting" checked={genres.includes("Dating")} onChange={(e) => { changeGenres('Dating', e.target.checked); }} />
             </Form.Group>
           </Form>
         </div>
@@ -156,13 +152,12 @@ const Home = ({ props }) => {
                   <div className="child w-10"><p>{p.platform}</p></div>
                   <div className="child w-15"><p>{p.genres.join(", ")}</p></div>
                   <div className="child w-10"><p>{p.updatedAt.slice(0, 10)}</p></div>
-                  <div className="child w-10"><p>{p.price + p.price * (rate * 1000) / 1000}</p></div>
+                  <div className="child w-10"><p>{Math.round((p.price + p.price * rate) * 1000) / 1000}</p></div>
                   <div className="child w-10"><button type="button" className="btn btn-primary">Buy</button></div>
                 </div>
               )
             })
           }
-
         </div>
       </div>
     </div>
